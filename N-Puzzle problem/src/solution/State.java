@@ -3,20 +3,20 @@ package solution;
 import java.util.ArrayList;
 
 public class State {
+    private static int SIZE;
     private final Direction direction;
-    private ArrayList<Direction> possibleMoves;
     private final State parent;
     private final int currentCost;
-    private final int size;
-    private int[][] blocks;
+    private int[][] tiles;
     private Coordinates zeroPosition;
     private int manhattanDistance;
+    private ArrayList<Direction> possibleMoves;
 
     public State(int[][] state) {
         direction = null;
         parent = null;
-        blocks = state;
-        size = state.length;
+        tiles = state;
+        SIZE = state.length;
         currentCost = 0;
 
         setZeroPosition();
@@ -25,10 +25,10 @@ public class State {
     }
 
     private void setZeroPosition() {
-        for (int i = 0; i < size; i++) {
-            for (int j = 0; j < size; j++) {
-                if (blocks[i][j] == 0) {
-                    zeroPosition = new Coordinates(i, j);
+        for (int row = 0; row < SIZE; row++) {
+            for (int column = 0; column < SIZE; column++) {
+                if (tiles[row][column] == 0) {
+                    zeroPosition = new Coordinates(row, column);
                     return;
                 }
             }
@@ -38,9 +38,10 @@ public class State {
     private void setManhattanDistance() {
         manhattanDistance = 0;
 
-        for (int i = 0; i < size; i++) {
-            for (int j = 0; j < size; j++) {
-                manhattanDistance += GoalState.distanceTable[blocks[i][j]][i * blocks.length + j];
+        for (int row = 0; row < SIZE; row++) {
+            for (int column = 0; column < SIZE; column++) {
+                manhattanDistance +=
+                        GoalState.distanceTable[tiles[row][column]][row * tiles.length + column];
             }
         }
     }
@@ -50,13 +51,13 @@ public class State {
         int row = zeroPosition.getRow();
         int column = zeroPosition.getColumn();
 
-        if (column != size - 1) {
+        if (column != SIZE - 1) {
             possibleMoves.add(Direction.LEFT);
         }
         if (column != 0) {
             possibleMoves.add(Direction.RIGHT);
         }
-        if (row != size - 1) {
+        if (row != SIZE - 1) {
             possibleMoves.add(Direction.UP);
         }
         if (row != 0) {
@@ -67,7 +68,7 @@ public class State {
     public State(State parent, Direction direction) {
         this.direction = direction;
         this.parent = parent;
-        size = parent.size;
+
         currentCost = parent.currentCost + 1;
         zeroPosition = parent.zeroPosition;
         manhattanDistance = parent.manhattanDistance;
@@ -78,9 +79,9 @@ public class State {
     }
 
     private void setBlocksBeforeMove() {
-        blocks = new int[size][size];
-        for (int i = 0; i < size; i++) {
-            System.arraycopy(parent.blocks[i], 0, blocks[i], 0, size);
+        tiles = new int[SIZE][SIZE];
+        for (int row = 0; row < SIZE; row++) {
+            System.arraycopy(parent.tiles[row], 0, tiles[row], 0, SIZE);
         }
     }
 
@@ -91,41 +92,42 @@ public class State {
         switch (direction) {
             case LEFT: {
                 updateManhattanDistance(row, column, 0, +1);
-                moveBy(row, column, 0, +1);
+                moveZeroBy(row, column, 0, +1);
                 updateZeroPosition(row, column + 1);
                 break;
             }
             case RIGHT: {
                 updateManhattanDistance(row, column, 0, -1);
-                moveBy(row, column, 0, -1);
+                moveZeroBy(row, column, 0, -1);
                 updateZeroPosition(row, column - 1);
                 break;
             }
             case UP: {
                 updateManhattanDistance(row, column, +1, 0);
-                moveBy(row, column, +1, 0);
+                moveZeroBy(row, column, +1, 0);
                 updateZeroPosition(row + 1, column);
                 break;
             }
             case DOWN: {
                 updateManhattanDistance(row, column, -1, 0);
-                moveBy(row, column, -1, 0);
+                moveZeroBy(row, column, -1, 0);
                 updateZeroPosition(row - 1, column);
             }
         }
     }
 
-    private void moveBy(int zeroRow, int zeroColumn, int moveRowBy, int moveColumnBy) {
-        blocks[zeroRow][zeroColumn] = blocks[zeroRow + moveRowBy][zeroColumn + moveColumnBy];
-        blocks[zeroRow + moveRowBy][zeroColumn + moveColumnBy] = 0;
+    private void moveZeroBy(int zeroRow, int zeroColumn, int moveRowBy, int moveColumnBy) {
+        tiles[zeroRow][zeroColumn] = tiles[zeroRow + moveRowBy][zeroColumn + moveColumnBy];
+        tiles[zeroRow + moveRowBy][zeroColumn + moveColumnBy] = 0;
     }
 
     private void updateManhattanDistance(int zeroRow, int zeroColumn, int moveRowBy, int moveColumnBy) {
-        int blockValue = blocks[zeroRow + moveRowBy][zeroColumn + moveColumnBy];
+        int blockValue = tiles[zeroRow + moveRowBy][zeroColumn + moveColumnBy];
 
-        int oldPosition = (zeroRow + moveRowBy) * size + zeroColumn + moveColumnBy;
+        int oldPosition = (zeroRow + moveRowBy) * SIZE + zeroColumn + moveColumnBy;
         manhattanDistance -= GoalState.distanceTable[blockValue][oldPosition];
-        int newPosition = zeroRow * size + zeroColumn;
+
+        int newPosition = zeroRow * SIZE + zeroColumn;
         manhattanDistance += GoalState.distanceTable[blockValue][newPosition];
     }
 
@@ -142,17 +144,17 @@ public class State {
         int row = zeroPosition.getRow();
         int column = zeroPosition.getColumn();
 
-        if (row != size - 1 && direction != Direction.DOWN) {
-            possibleMoves.add(Direction.UP);
-        }
         if (column != 0 && direction != Direction.LEFT) {
             possibleMoves.add(Direction.RIGHT);
         }
-        if (column != size - 1 && direction != Direction.RIGHT) {
+        if (column != SIZE - 1 && direction != Direction.RIGHT) {
             possibleMoves.add(Direction.LEFT);
         }
         if (row != 0 && direction != Direction.UP) {
             possibleMoves.add(Direction.DOWN);
+        }
+        if (row != SIZE - 1 && direction != Direction.DOWN) {
+            possibleMoves.add(Direction.UP);
         }
     }
 

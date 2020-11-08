@@ -16,44 +16,44 @@ public class ProblemSolution {
         int zeroIndex = scanner.nextInt();
 
         int size = (int) Math.sqrt(N + 1);
-        int[][] start = new int[size][size];
-        for (int i = 0; i < size; i++) {
-            for (int j = 0; j < size; j++) {
-                start[i][j] = scanner.nextInt();
+        int[][] startTileBoard = new int[size][size];
+        for (int row = 0; row < size; row++) {
+            for (int column = 0; column < size; column++) {
+                startTileBoard[row][column] = scanner.nextInt();
             }
         }
 
-        int[][] goal = new int[size][size];
+        int[][] goalTileBoard = new int[size][size];
 
         if (zeroIndex == -1 || zeroIndex == N) {
-            for (int i = 0; i < size; i++) {
-                for (int j = 0; j < size; j++) {
-                    goal[i][j] = i * size + j + 1;
+            for (int row = 0; row < size; row++) {
+                for (int column = 0; column < size; column++) {
+                    goalTileBoard[row][column] = row * size + column + 1;
                 }
             }
-            goal[size - 1][size - 1] = 0;
+            goalTileBoard[size - 1][size - 1] = 0;
         } else {
-            for (int i = 0; i < size; i++) {
-                for (int j = 0; j < size; j++) {
-                    if (zeroIndex > i * size + j) {
-                        goal[i][j] = i * size + j + 1;
-                    } else if (zeroIndex == i * size + j) {
-                        goal[i][j] = 0;
+            for (int row = 0; row < size; row++) {
+                for (int column = 0; column < size; column++) {
+                    if (zeroIndex > row * size + column) {
+                        goalTileBoard[row][column] = row * size + column + 1;
+                    } else if (zeroIndex == row * size + column) {
+                        goalTileBoard[row][column] = 0;
                     } else {
-                        goal[i][j] = i * size + j;
+                        goalTileBoard[row][column] = row * size + column;
                     }
                 }
             }
         }
 
-        GoalState goalState = new GoalState(goal, size);
-
-        startState = new State(start);
+        GoalState goalState = new GoalState(goalTileBoard, size);
+        startState = new State(startTileBoard);
 
         long startTime = System.currentTimeMillis();
-
         iterativeDeepeningAStar();
-        System.out.println("Time: " + ((double) (System.currentTimeMillis() - startTime) / 1000) + " seconds");
+
+        System.out.println("Time: " + ((double)
+                (System.currentTimeMillis() - startTime) / 1000) + " seconds");
 
         System.out.println(movesToGoal.size());
         for (String move : movesToGoal) {

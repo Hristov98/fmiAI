@@ -11,7 +11,7 @@ import java.util.Collections;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class IDAStarTest3x3 {
+class NPuzzle3x3Test {
     public int[][] goalState = new int[][]{
             {1, 2, 3}, {4, 5, 6}, {7, 8, 0}
     };
@@ -188,7 +188,7 @@ class IDAStarTest3x3 {
         ProblemSolution.iterativeDeepeningAStar();
 
         assertEquals(steps, ProblemSolution.movesToGoal.size());
-        assertEquals(moves2, getMovesShortened(ProblemSolution.movesToGoal));
+        assertEquals(moves, getMovesShortened(ProblemSolution.movesToGoal));
     }
 
     @Test
