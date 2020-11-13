@@ -46,4 +46,19 @@ public class SolutionTester {
         System.out.println("Best time: " + bestTime);
         System.out.printf("Average time to execute: %.4f\n", totalTestTime / cycles);
     }
+
+    public static void test(){
+
+        //SolutionTester.testSolution(4,100);
+        //SolutionTester.testSolution(100,1000);
+        //SolutionTester.testSolution(1000,5000);
+        //SolutionTester.testSolution(5000,6000);
+        //SolutionTester.testSolution(6000,7000);
+        //SolutionTester.testSolution(7000,8000);
+        //SolutionTester.testSolution(8000,9000);
+        //SolutionTester.testSolution(9000,10000);
+
+
+        //SolutionTester.test10KSolutionNTimes(100);
+    }
 }

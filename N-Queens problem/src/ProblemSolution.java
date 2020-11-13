@@ -48,7 +48,6 @@ public class ProblemSolution {
         queensOnMainDiagonal = new int[2 * N - 1];
         queensOnSecondaryDiagonal = new int[2 * N - 1];
 
-        //maybe fix first queen to row 0?
         Random random = new Random();
         int randomStartingRow = random.nextInt(N);
         queens[0] = randomStartingRow;
@@ -103,23 +102,30 @@ public class ProblemSolution {
     }
 
     private int getColumnWithQueenWithMaxConflicts() {
-        int maxConflicts = -1;
-        int maxQueenColumn = 0;
-
+        int maximumConflicts = -1;
         for (int column = 0; column < N; column++) {
             int conflicts = getConflictsForQueenOnColumn(column);
 
-            if (conflicts > 0 && conflicts > maxConflicts) {
-                maxConflicts = conflicts;
-                maxQueenColumn = column;
+            if (conflicts > 0 && conflicts > maximumConflicts) {
+                maximumConflicts = conflicts;
             }
         }
 
-        if (maxConflicts == -1) {
+        if (maximumConflicts == -1) {
             return NO_CONFLICTS_FOUND;
         }
 
-        return maxQueenColumn;
+        List<Integer> maximums = new ArrayList<>();
+        for (int column = 0; column < N; column++) {
+            int conflicts = getConflictsForQueenOnColumn(column);
+
+            if (conflicts == maximumConflicts) {
+                maximums.add(column);
+            }
+        }
+
+        Random random = new Random();
+        return maximums.get(random.nextInt(maximums.size()));
     }
 
     private int getConflictsForQueenOnColumn(int column) {
