@@ -11,6 +11,10 @@ public class ProblemSolution {
     private int[] queensOnSecondaryDiagonal;
 
     ProblemSolution(int N) {
+        setN(N);
+    }
+
+    public void setN(int N) {
         this.N = N;
     }
 
@@ -18,14 +22,15 @@ public class ProblemSolution {
         initialise(N);
 
         int iterator = 0;
-        while (iterator++ <= 100) {
+        int constant = 3;
+        while (iterator++ <= N * constant) {
             int maxConflictColumn = getColumnWithQueenWithMaxConflicts();
 
             if (maxConflictColumn == NO_CONFLICTS_FOUND) {
                 break;
             }
 
-            int minConflictRow = getRowWithMinConflicts(maxConflictColumn);
+            int minConflictRow = getRandomRowWithMinConflicts(maxConflictColumn);
 
             updateConflictTables(maxConflictColumn, -1);
             queens[maxConflictColumn] = minConflictRow;
@@ -43,6 +48,7 @@ public class ProblemSolution {
         queensOnMainDiagonal = new int[2 * N - 1];
         queensOnSecondaryDiagonal = new int[2 * N - 1];
 
+        //maybe fix first queen to row 0?
         Random random = new Random();
         int randomStartingRow = random.nextInt(N);
         queens[0] = randomStartingRow;
@@ -54,6 +60,12 @@ public class ProblemSolution {
             queens[column] = minimumRow;
             updateConflictTables(column, +1);
         }
+    }
+
+    private void updateConflictTables(int column, int updateBy) {
+        queensOnRow[queens[column]] += updateBy;
+        queensOnMainDiagonal[N - 1 + (column - queens[column])] += updateBy;
+        queensOnSecondaryDiagonal[column + queens[column]] += updateBy;
     }
 
     private int getRandomRowWithMinConflicts(int column) {
@@ -121,28 +133,6 @@ public class ProblemSolution {
         return conflicts;
     }
 
-    private int getRowWithMinConflicts(int column) {
-        int minimumConflicts = Integer.MAX_VALUE;
-        int minimumConflictRow = -1;
-
-        for (int row = 0; row < N; row++) {
-            int conflicts = getConflictsForCell(column, row);
-
-            if (conflicts < minimumConflicts) {
-                minimumConflicts = conflicts;
-                minimumConflictRow = row;
-            }
-        }
-
-        return minimumConflictRow;
-    }
-
-    private void updateConflictTables(int column, int updateBy) {
-        queensOnRow[queens[column]] += updateBy;
-        queensOnMainDiagonal[N - 1 + (column - queens[column])] += updateBy;
-        queensOnSecondaryDiagonal[column + queens[column]] += updateBy;
-    }
-
     private boolean hasConflicts() {
         for (int column = 0; column < N; column++) {
             int conflicts = getConflictsForQueenOnColumn(column);
@@ -166,23 +156,5 @@ public class ProblemSolution {
             }
             System.out.println();
         }
-    }
-
-    public void testSolution(int from, int to) {
-        int size = from;
-
-        long totalStartTime = System.currentTimeMillis();
-        do {
-            N = size;
-            long localStartTime = System.currentTimeMillis();
-            solveNQueens();
-            double endTime = ((double) System.currentTimeMillis() - localStartTime) / 1000;
-            System.out.println("Time to solve for " + size + " queens: " + endTime);
-
-            size++;
-        } while (size <= to);
-
-        double totalTestTime = ((double) System.currentTimeMillis() - totalStartTime) / 1000;
-        System.out.printf("Time to execute all tests from %d to %d: %f", from, to, totalTestTime);
     }
 }

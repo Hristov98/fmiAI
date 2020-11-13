@@ -19,14 +19,15 @@ public class Main {
             long startTime = System.currentTimeMillis();
             solution.solveNQueens();
             double endTime = ((double) System.currentTimeMillis() - startTime) / 1000;
-            System.out.println("Time to solve: " + endTime);
 
+            System.out.println("Time to solve: " + endTime);
             solution.printState();
 
-            //solution.testSolution(4,100);
-            solution.testSolution(100,1000);
-            //solution.testSolution(1000,5000);
-            //solution.testSolution(5000,10000);
+            //SolutionTester.testSolution(4,100);
+            //SolutionTester.testSolution(100,1000);
+            //SolutionTester.testSolution(1000,5000);
+            //SolutionTester.testSolution(5000,10000);
+            //SolutionTester.test10KSolutionNTimes(50);
         }
     }
 }
