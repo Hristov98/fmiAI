@@ -59,6 +59,6 @@ public class SolutionTester {
         //SolutionTester.testSolution(9000,10000);
 
 
-        //SolutionTester.test10KSolutionNTimes(100);
+        SolutionTester.test10KSolutionNTimes(10);
     }
 }

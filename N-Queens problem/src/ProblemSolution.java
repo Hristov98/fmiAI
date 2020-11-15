@@ -49,13 +49,12 @@ public class ProblemSolution {
         queensOnSecondaryDiagonal = new int[2 * N - 1];
 
         Random random = new Random();
-        int randomStartingRow = random.nextInt(N);
-        queens[0] = randomStartingRow;
+
+        queens[0] = random.nextInt(N);
         updateConflictTables(0, +1);
 
         for (int column = 1; column < N; column++) {
             int minimumRow = getRandomRowWithMinConflicts(column);
-
             queens[column] = minimumRow;
             updateConflictTables(column, +1);
         }

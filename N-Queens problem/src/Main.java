@@ -22,7 +22,5 @@ public class Main {
             System.out.println("Time to solve: " + endTime);
             solution.printState();
         }
-
-        // SolutionTester.test();
     }
 }
