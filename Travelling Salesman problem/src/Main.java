@@ -17,7 +17,7 @@ public class Main {
             ProblemSolution solution = new ProblemSolution(N);
             solution.findCheapestPathThroughNCities();
 
-            System.out.println("\nBest path is: ");
+            System.out.println("\nBest path found is: ");
             System.out.println(solution.getBestPath());
         }
 

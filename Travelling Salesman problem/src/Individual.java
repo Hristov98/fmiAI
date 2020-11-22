@@ -5,7 +5,7 @@ import java.util.Random;
 
 public class Individual implements Comparable<Individual> {
     private List<Integer> path;
-    private int fitness;
+    private int pathCost;
 
     public Individual(int pathSize) {
         generatePath(pathSize);
@@ -31,9 +31,9 @@ public class Individual implements Comparable<Individual> {
     }
 
     private void calculatePathScore() {
-        fitness = 0;
+        pathCost = 0;
         for (int i = 0; i < path.size() - 1; i++) {
-            fitness += DistanceTable.pathCosts[path.get(i)][path.get(i + 1)];
+            pathCost += DistanceTable.pathCosts[path.get(i)][path.get(i + 1)];
         }
     }
 
@@ -62,11 +62,11 @@ public class Individual implements Comparable<Individual> {
 
     @Override
     public String toString() {
-        return String.format("Cost %d for path %s", fitness, path);
+        return String.format("Cost %d for path %s", pathCost, path);
     }
 
     @Override
     public int compareTo(Individual individual) {
-        return fitness - individual.fitness;
+        return pathCost - individual.pathCost;
     }
 }
