@@ -1,0 +1,150 @@
+package test;
+
+import State;
+
+public class ProgramSolution {
+    private final char PLAYER = 'X';
+    private final char AI = 'O';
+    private final int PLAYER_VICTORY = 1;
+    private final int DRAW = 0;
+    private final int AI_VICTORY = -1;
+
+    public Move findBestMove(char[][] board) {
+        int bestValue = Integer.MIN_VALUE;
+        Move bestMove = new Move(-1, -1);
+
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                if (board[i][j] == '_') {
+                    board[i][j] = PLAYER;
+                    int moveVal = minimax(board, 0, false);
+                    board[i][j] = '_';
+
+                    if (moveVal > bestValue) {
+                        bestMove = new Move(i, j);
+                        bestValue = moveVal;
+                    }
+                }
+            }
+        }
+
+        System.out.printf("The value of the best Move is : %d\n\n", bestValue);
+
+        return bestMove;
+    }
+
+    private int minimax(char[][] board, int depth, Boolean isMax) {
+        int score = evaluate(board);
+
+        if (score == 10)
+            return 10 - depth;
+
+        if (score == -10)
+            return depth - 10;
+
+        if (!boardIsFull(board))
+            return 0;
+
+        if (isMax) {
+            int best = Integer.MIN_VALUE;
+            for (int i = 0; i < 3; i++) {
+                for (int j = 0; j < 3; j++) {
+                    if (board[i][j] == '_') {
+                        board[i][j] = PLAYER;
+                        best = Math.max(best, minimax(board, depth + 1, false));
+                        board[i][j] = '_';
+                    }
+                }
+            }
+
+            return best;
+        } else {
+            int best = Integer.MAX_VALUE;
+            for (int i = 0; i < 3; i++) {
+                for (int j = 0; j < 3; j++) {
+                    if (board[i][j] == '_') {
+                        board[i][j] = AI;
+                        best = Math.min(best, minimax(board, depth + 1, true));
+                        board[i][j] = '_';
+                    }
+                }
+            }
+            return best;
+        }
+    }
+
+    public int minMax() {
+        State startState = new State();
+        return maxValue(startState);
+    }
+
+    public static int maxValue(State state) {
+        if (state.isTerminalState()) {
+            return state.evaluateTerminalState();
+        }
+
+        int maxValue = Integer.MIN_VALUE;
+        for (State successor : state.getSuccessors()) {
+            maxValue = Math.max(maxValue, minValue(successor));
+        }
+
+        return maxValue;
+    }
+
+
+    public static int minValue(State state) {
+        if (state.isTerminalState()) {
+            return state.evaluateTerminalState();
+        }
+
+        int minValue = Integer.MAX_VALUE;
+        for (State successor : state.getSuccessors()) {
+            minValue = Math.min(minValue, maxValue(successor));
+        }
+
+        return minValue;
+    }
+
+    public boolean boardIsFull(char[][] board) {
+        for (int i = 0; i < 3; i++)
+            for (int j = 0; j < 3; j++)
+                if (board[i][j] == '_') {
+                    return true;
+                }
+
+        return false;
+    }
+
+    public int evaluate(char[][] board) {
+        if (threeInARowFound(board, PLAYER)) {
+            return 10;
+        } else if (threeInARowFound(board, AI)) {
+            return -10;
+        } else return 0;
+    }
+
+    private boolean threeInARowFound(char[][] board, char symbol) {
+        if (board[0][0] == symbol && board[0][1] == symbol && board[0][2] == symbol) {
+            return true;
+        }
+        if (board[1][0] == symbol && board[1][1] == symbol && board[1][2] == symbol) {
+            return true;
+        }
+        if (board[2][0] == symbol && board[2][1] == symbol && board[2][2] == symbol) {
+            return true;
+        }
+        if (board[0][0] == symbol && board[1][0] == symbol && board[2][0] == symbol) {
+            return true;
+        }
+        if (board[0][1] == symbol && board[1][1] == symbol && board[2][1] == symbol) {
+            return true;
+        }
+        if (board[0][2] == symbol && board[1][2] == symbol && board[2][2] == symbol) {
+            return true;
+        }
+        if (board[0][0] == symbol && board[1][1] == symbol && board[2][2] == symbol) {
+            return true;
+        }
+        return board[0][2] == symbol && board[1][1] == symbol && board[2][0] == symbol;
+    }
+}

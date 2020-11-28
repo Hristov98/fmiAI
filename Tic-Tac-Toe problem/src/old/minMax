@@ -1,0 +1,31 @@
+/*   public int minMax() {
+        old.State startState = new old.State();
+        return maxValue(startState);
+    }
+
+    public static int maxValue(old.State state) {
+        if (state.isTerminalState()) {
+            return state.evaluateTerminalState();
+        }
+
+        int maxValue = Integer.MIN_VALUE;
+        for (old.State successor : state.getSuccessors()) {
+            maxValue = Math.max(maxValue, minValue(successor));
+        }
+
+        return maxValue;
+    }
+
+
+    public static int minValue(old.State state) {
+        if (state.isTerminalState()) {
+            return state.evaluateTerminalState();
+        }
+
+        int minValue = Integer.MAX_VALUE;
+        for (old.State successor : state.getSuccessors()) {
+            minValue = Math.min(minValue, maxValue(successor));
+        }
+
+        return minValue;
+    }*/
