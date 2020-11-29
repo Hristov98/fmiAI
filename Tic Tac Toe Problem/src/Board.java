@@ -88,6 +88,7 @@ public class Board {
         if (moveCount == SIZE * SIZE) {
             winner = CellState.BLANK;
             gameIsOver = true;
+            return;
         }
 
         checkRowForWinner(row);
@@ -101,51 +102,46 @@ public class Board {
             if (board[row][column] != board[row][column - 1]) {
                 return;
             }
-            if (column == SIZE - 1) {
-                winner = currentPlayer;
-                gameIsOver = true;
-            }
         }
+
+        winner = currentPlayer;
+        gameIsOver = true;
     }
 
     private void checkColumnForWinner(int column) {
-        for (int row = 1; row < SIZE; row++) {
-            if (board[row][column] != board[row - 1][column]) {
-                break;
-            }
-
-            if (row == SIZE - 1) {
-                winner = currentPlayer;
-                gameIsOver = true;
+        for (int row = 0; row < SIZE - 1; row++) {
+            if (board[row][column] != board[row + 1][column]) {
+                return;
             }
         }
+
+        winner = currentPlayer;
+        gameIsOver = true;
     }
 
     private void checkMainDiagonalForWinner(int row, int column) {
         if (row == column) {
-            for (int i = 1; i < SIZE; i++) {
-                if (board[i][i] != board[i - 1][i - 1]) {
-                    break;
-                }
-                if (i == SIZE - 1) {
-                    winner = currentPlayer;
-                    gameIsOver = true;
+            for (int i = 0; i < SIZE - 1; i++) {
+                if (board[i][i] != board[i + 1][i + 1]) {
+                    return;
                 }
             }
+
+            winner = currentPlayer;
+            gameIsOver = true;
         }
     }
 
     private void checkSecondaryDiagonalForWinner(int row, int column) {
-        if (SIZE - 1 - column == row) {
+        if (row == SIZE - 1 - column) {
             for (int i = 1; i < SIZE; i++) {
                 if (board[SIZE - 1 - i][i] != board[SIZE - i][i - 1]) {
-                    break;
-                }
-                if (i == SIZE - 1) {
-                    winner = currentPlayer;
-                    gameIsOver = true;
+                    return;
                 }
             }
+
+            winner = currentPlayer;
+            gameIsOver = true;
         }
     }
 
