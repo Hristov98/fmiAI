@@ -11,10 +11,10 @@ public class Game {
     }
 
     public void playGamePlayerGoesFirst() {
-        System.out.println("Starting a new game.");
+        System.out.println("Start of game: ");
 
         while (true) {
-            printGameStatus();
+            board.printBoard();
             playMovePlayerGoesFirst();
 
             if (board.gameIsOver()) {
@@ -28,12 +28,18 @@ public class Game {
         if (board.getTurn() == CellState.X) {
             getPlayerMove();
         } else {
-            AlphaBetaPruning.run(board.getTurn(), board, 10);
+            System.out.println("AI move:");
+            AlphaBetaPruning.alphaBetaPruning(board.getTurn(), board,
+                    Integer.MIN_VALUE, Integer.MAX_VALUE, 0);
         }
     }
 
-    private void printGameStatus() {
-        System.out.println("\n" + board + "\n");
+    public void playGameAIGoesFirst() {
+        throw new UnsupportedOperationException("TBD");
+    }
+
+    private void playMoveAIGoesFirst() {
+        throw new UnsupportedOperationException("TBD");
     }
 
     private void getPlayerMove() {
@@ -55,10 +61,10 @@ public class Game {
     }
 
     private void printWinner() {
+        System.out.println("Final result:");
+        board.printBoard();
+
         CellState winner = board.getWinner();
-
-        System.out.println("\n" + board + "\n");
-
         if (winner == CellState.BLANK) {
             System.out.println("The game is a draw.");
         } else if (winner == CellState.X) {

@@ -19,6 +19,39 @@ public class Board {
         initializeBoard();
     }
 
+    public Board(Board boardToCopy){
+        this.board = new CellState[SIZE][SIZE];
+        for (int i = 0; i < boardToCopy.board.length; i++) {
+            this.board[i] = boardToCopy.board[i].clone();
+        }
+
+       this.currentPlayer = boardToCopy.currentPlayer;
+       this.winner = boardToCopy.winner;
+       this.movesAvailable = new HashSet<>();
+       this.movesAvailable.addAll(boardToCopy.movesAvailable);
+       this.moveCount = boardToCopy.moveCount;
+       this.gameIsOver = boardToCopy.gameIsOver;
+    }
+
+    public boolean gameIsOver() {
+        return gameIsOver;
+    }
+
+    public CellState getTurn() {
+        return currentPlayer;
+    }
+
+    public CellState getWinner() {
+        if (!gameIsOver) {
+            throw new IllegalStateException("The game is not over yet.");
+        }
+        return winner;
+    }
+
+    public HashSet<Integer> getAvailableMoves() {
+        return movesAvailable;
+    }
+
     private void initializeBoard() {
         for (int row = 0; row < SIZE; row++) {
             for (int col = 0; col < SIZE; col++) {
@@ -117,67 +150,19 @@ public class Board {
         }
     }
 
-    public boolean gameIsOver() {
-        return gameIsOver;
-    }
-
-    public CellState getTurn() {
-        return currentPlayer;
-    }
-
-    public CellState getWinner() {
-        if (!gameIsOver) {
-            throw new IllegalStateException("The game is not over yet.");
-        }
-        return winner;
-    }
-
-    public HashSet<Integer> getAvailableMoves() {
-        return movesAvailable;
-    }
-
-    /**
-     * Get a deep copy of the Tic Tac Toe board.
-     *
-     * @return an identical copy of the board
-     */
-    public Board getDeepCopy() {
-        Board board = new Board();
-
-        for (int i = 0; i < board.board.length; i++) {
-            board.board[i] = this.board[i].clone();
-        }
-
-        board.currentPlayer = this.currentPlayer;
-        board.winner = this.winner;
-        board.movesAvailable = new HashSet<>();
-        board.movesAvailable.addAll(this.movesAvailable);
-        board.moveCount = this.moveCount;
-        board.gameIsOver = this.gameIsOver;
-        return board;
-    }
-
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-
-        for (int y = 0; y < SIZE; y++) {
-            for (int x = 0; x < SIZE; x++) {
-
-                if (board[y][x] == CellState.BLANK) {
-                    sb.append("-");
+    public void printBoard() {
+        for (int row = 0; row < SIZE; row++) {
+            for (int column = 0; column < SIZE; column++) {
+                if (board[row][column] == CellState.BLANK) {
+                    System.out.print("_ ");
+                } else if (board[row][column] == CellState.X) {
+                    System.out.print("X ");
                 } else {
-                    sb.append(board[y][x].name());
+                    System.out.print("O ");
                 }
-                sb.append(" ");
-
             }
-            if (y != SIZE - 1) {
-                sb.append("\n");
-            }
+            System.out.println();
         }
-
-        return new String(sb);
+        System.out.println();
     }
-
 }
