@@ -1,3 +1,3 @@
 public enum CellState {
-    BLANK, X, O
+    EMPTY, X, O
 }

@@ -4,7 +4,7 @@ public class Move {
 
     public Move(int row, int column) {
         this.row = row;
-        this.column= column;
+        this.column = column;
     }
 
     public int getRow() {

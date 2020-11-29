@@ -57,7 +57,7 @@ public class Game {
         board.printBoard();
 
         CellState winner = board.getWinner();
-        if (winner == CellState.BLANK) {
+        if (winner == CellState.EMPTY) {
             System.out.println("The game is a draw.");
         } else if (winner == CellState.X) {
             System.out.println("The player wins!");

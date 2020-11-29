@@ -16,14 +16,14 @@ public class Board {
         moveCount = 0;
         gameIsOver = false;
         currentPlayer = player;
-        winner = CellState.BLANK;
+        winner = CellState.EMPTY;
         initializeBoard();
     }
 
     private void initializeBoard() {
         for (int row = 0; row < SIZE; row++) {
             for (int col = 0; col < SIZE; col++) {
-                board[row][col] = CellState.BLANK;
+                board[row][col] = CellState.EMPTY;
             }
         }
 
@@ -70,7 +70,7 @@ public class Board {
             throw new IllegalStateException("Game is already over. No moves can be played.");
         }
 
-        if (board[row][column] == CellState.BLANK) {
+        if (board[row][column] == CellState.EMPTY) {
             board[row][column] = currentPlayer;
         } else {
             return false;
@@ -91,7 +91,7 @@ public class Board {
         checkSecondaryDiagonalForWinner(row, column);
 
         if (moveCount == SIZE * SIZE && !gameIsOver) {
-            winner = CellState.BLANK;
+            winner = CellState.EMPTY;
             gameIsOver = true;
         }
     }
@@ -147,7 +147,7 @@ public class Board {
     public void printBoard() {
         for (int row = 0; row < SIZE; row++) {
             for (int column = 0; column < SIZE; column++) {
-                if (board[row][column] == CellState.BLANK) {
+                if (board[row][column] == CellState.EMPTY) {
                     System.out.print("_ ");
                 } else if (board[row][column] == CellState.X) {
                     System.out.print("X ");
