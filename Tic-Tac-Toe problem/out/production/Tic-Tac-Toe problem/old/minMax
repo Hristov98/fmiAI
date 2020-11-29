@@ -1,15 +1,15 @@
 /*   public int minMax() {
-        State startState = new State();
+        old.State startState = new old.State();
         return maxValue(startState);
     }
 
-    public static int maxValue(State state) {
+    public static int maxValue(old.State state) {
         if (state.isTerminalState()) {
             return state.evaluateTerminalState();
         }
 
         int maxValue = Integer.MIN_VALUE;
-        for (State successor : state.getSuccessors()) {
+        for (old.State successor : state.getSuccessors()) {
             maxValue = Math.max(maxValue, minValue(successor));
         }
 
@@ -17,13 +17,13 @@
     }
 
 
-    public static int minValue(State state) {
+    public static int minValue(old.State state) {
         if (state.isTerminalState()) {
             return state.evaluateTerminalState();
         }
 
         int minValue = Integer.MAX_VALUE;
-        for (State successor : state.getSuccessors()) {
+        for (old.State successor : state.getSuccessors()) {
             minValue = Math.min(minValue, maxValue(successor));
         }
 

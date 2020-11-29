@@ -8,7 +8,6 @@ public class Main {
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-
         System.out.println("Choose who goes first by entering the specific number:");
         System.out.println("1) Player");
         System.out.println("2) AI");
@@ -31,7 +30,7 @@ public class Main {
 
             if (isPlayerTurn) {
                 while (true) {
-                    System.out.println("Choose your move by entering a row and column:");
+                    System.out.println("Choose your move by entering a row and column (1-3):");
                     int row = scanner.nextInt();
                     int column = scanner.nextInt();
 
@@ -52,9 +51,9 @@ public class Main {
         System.out.println("The final result is: ");
         printBoard(board);
         int result = evaluateBoard(board);
-        if (result == 10) {
+        if (result == PLAYER_VICTORY) {
             System.out.println("The player wins the game!");
-        } else if (result == -10) {
+        } else if (result == AI_VICTORY) {
             System.out.println("The AI wins the game!");
         } else {
             System.out.println("The game is a draw!");
@@ -70,7 +69,11 @@ public class Main {
                 if (board[i][j] == '_') {
                     board[i][j] = 'O';
                     int moveVal = maxValue(board, 0);
+                    System.out.println(moveVal);
+                    printBoard(board);
                     board[i][j] = '_';
+
+
 
                     if (moveVal > bestVal) {
                         bestMove = new Move(i, j);
@@ -85,9 +88,6 @@ public class Main {
 
     public static int maxValue(char[][] board, int depth) {
         int evaluation = evaluateBoard(board);
-        if (evaluation == PLAYER_VICTORY) {
-            return 10 - depth;
-        }
         if (evaluation == AI_VICTORY) {
             return depth - 10;
         }
@@ -95,14 +95,15 @@ public class Main {
             return 0;
         }
 
-
         int maxValue = Integer.MIN_VALUE;
         for (int i = 0; i < SIZE; i++) {
             for (int j = 0; j < SIZE; j++) {
                 if (board[i][j] == '_') {
                     board[i][j] = 'O';
+                  //  printBoard(board);
                     maxValue = Math.max(maxValue, minValue(board, depth + 1));
                     board[i][j] = '_';
+                 //   System.out.println(maxValue);
                 }
             }
         }
@@ -115,9 +116,6 @@ public class Main {
         int evaluation = evaluateBoard(board);
         if (evaluation == PLAYER_VICTORY) {
             return 10 - depth;
-        }
-        if (evaluation == AI_VICTORY) {
-            return depth - 10;
         }
         if (boardIsFilled(board) && evaluation == DRAW) {
             return 0;
@@ -161,6 +159,7 @@ public class Main {
     }
 
     private static boolean threeInARowFound(char[][] board, char symbol) {
+        //rows
         if (board[0][0] == symbol && board[0][1] == symbol && board[0][2] == symbol) {
             return true;
         }
@@ -170,6 +169,8 @@ public class Main {
         if (board[2][0] == symbol && board[2][1] == symbol && board[2][2] == symbol) {
             return true;
         }
+
+        //columns
         if (board[0][0] == symbol && board[1][0] == symbol && board[2][0] == symbol) {
             return true;
         }
@@ -179,9 +180,12 @@ public class Main {
         if (board[0][2] == symbol && board[1][2] == symbol && board[2][2] == symbol) {
             return true;
         }
+
+        //main diagonal
         if (board[0][0] == symbol && board[1][1] == symbol && board[2][2] == symbol) {
             return true;
         }
+        //secondary diagonal
         return board[0][2] == symbol && board[1][1] == symbol && board[2][0] == symbol;
     }
 
