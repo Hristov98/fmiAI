@@ -5,17 +5,17 @@ public class Game {
     private final Board board;
     private final Scanner scanner;
 
-    public Game() {
-        board = new Board();
+    public Game(CellState firstPlayer) {
+        board = new Board(firstPlayer);
         scanner = new Scanner(System.in);
     }
 
-    public void playGamePlayerGoesFirst() {
+    public void executeGame() {
         System.out.println("Start of game: ");
 
         while (true) {
             board.printBoard();
-            playMovePlayerGoesFirst();
+            executeMove();
 
             if (board.gameIsOver()) {
                 printWinner();
@@ -24,7 +24,7 @@ public class Game {
         }
     }
 
-    private void playMovePlayerGoesFirst() {
+    private void executeMove() {
         if (board.getTurn() == CellState.X) {
             getPlayerMove();
         } else {
@@ -32,14 +32,6 @@ public class Game {
             ProblemSolution.alphaBetaPruning(board.getTurn(), board,
                     Integer.MIN_VALUE, Integer.MAX_VALUE, 0);
         }
-    }
-
-    public void playGameAIGoesFirst() {
-        throw new UnsupportedOperationException("TBD");
-    }
-
-    private void playMoveAIGoesFirst() {
-        throw new UnsupportedOperationException("TBD");
     }
 
     private void getPlayerMove() {

@@ -10,12 +10,12 @@ public class Board {
     private int moveCount;
     private boolean gameIsOver;
 
-    public Board() {
+    public Board(CellState player) {
         board = new CellState[SIZE][SIZE];
         movesAvailable = new HashMap<>();
         moveCount = 0;
         gameIsOver = false;
-        currentPlayer = CellState.X;
+        currentPlayer = player;
         winner = CellState.BLANK;
         initializeBoard();
     }
@@ -85,16 +85,15 @@ public class Board {
     }
 
     private void checkForTerminalState(int row, int column) {
-        if (moveCount == SIZE * SIZE) {
-            winner = CellState.BLANK;
-            gameIsOver = true;
-            return;
-        }
-
         checkRowForWinner(row);
         checkColumnForWinner(column);
         checkMainDiagonalForWinner(row, column);
         checkSecondaryDiagonalForWinner(row, column);
+
+        if (moveCount == SIZE * SIZE && !gameIsOver) {
+            winner = CellState.BLANK;
+            gameIsOver = true;
+        }
     }
 
     private void checkRowForWinner(int row) {
