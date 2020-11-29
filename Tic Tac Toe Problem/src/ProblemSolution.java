@@ -1,19 +1,6 @@
-class AlphaBetaPruning {
+class ProblemSolution {
     private static final int MAX_DEPTH = 10;
 
-    private AlphaBetaPruning() {
-    }
-
-    /**
-     * The meat of the algorithm.
-     *
-     * @param player the player that the AI will identify as
-     * @param board  the Tic Tac Toe board to play on
-     * @param alpha  the alpha value
-     * @param beta   the beta value
-     * @param depth  the current depth
-     * @return the score of the board
-     */
     public static int alphaBetaPruning(CellState player, Board board, int alpha, int beta, int depth) {
         if (depth++ == MAX_DEPTH || board.gameIsOver()) {
             return evaluateMove(player, board);
@@ -27,19 +14,17 @@ class AlphaBetaPruning {
     }
 
     private static int maxValue(CellState currentPlayer, Board board, int alpha, int beta, int depth) {
-        int indexOfBestMove = -1;
+        Move bestMove = null;
 
-        for (Integer theMove : board.getAvailableMoves()) {
-
+        for (Move move : board.getAvailableMoves()) {
             Board modifiedBoard = new Board(board);
-            int row = theMove / 3;
-            int column = theMove % 3;
-            modifiedBoard.move(row, column);
+            modifiedBoard.move(move.getRow(), move.getColumn());
+
             int score = alphaBetaPruning(currentPlayer, modifiedBoard, alpha, beta, depth);
 
             if (score > alpha) {
                 alpha = score;
-                indexOfBestMove = theMove;
+                bestMove = move;
             }
 
             // Pruning.
@@ -48,29 +33,24 @@ class AlphaBetaPruning {
             }
         }
 
-        if (indexOfBestMove != -1) {
-            int row = indexOfBestMove / 3;
-            int column = indexOfBestMove % 3;
-            board.move(row, column);
+        if (bestMove != null) {
+            board.move(bestMove.getRow(), bestMove.getColumn());
         }
         return alpha;
     }
 
     private static int minValue(CellState currentPlayer, Board board, int alpha, int beta, int depth) {
-        int indexOfBestMove = -1;
+        Move bestMove = null;
 
-        for (Integer theMove : board.getAvailableMoves()) {
-
+        for ( Move move  : board.getAvailableMoves()) {
             Board modifiedBoard = new Board(board);
-            int row = theMove / 3;
-            int column = theMove % 3;
-            modifiedBoard.move(row, column);
+            modifiedBoard.move(move.getRow(), move.getColumn());
 
             int score = alphaBetaPruning(currentPlayer, modifiedBoard, alpha, beta, depth);
 
             if (score < beta) {
                 beta = score;
-                indexOfBestMove = theMove;
+                bestMove = move;
             }
 
             // Pruning.
@@ -79,10 +59,8 @@ class AlphaBetaPruning {
             }
         }
 
-        if (indexOfBestMove != -1) {
-            int row = indexOfBestMove / 3;
-            int column = indexOfBestMove % 3;
-            board.move(row, column);
+        if (bestMove != null) {
+            board.move(bestMove.getRow(), bestMove.getColumn());
         }
         return beta;
     }

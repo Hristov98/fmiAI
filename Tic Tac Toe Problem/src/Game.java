@@ -29,7 +29,7 @@ public class Game {
             getPlayerMove();
         } else {
             System.out.println("AI move:");
-            AlphaBetaPruning.alphaBetaPruning(board.getTurn(), board,
+            ProblemSolution.alphaBetaPruning(board.getTurn(), board,
                     Integer.MIN_VALUE, Integer.MAX_VALUE, 0);
         }
     }

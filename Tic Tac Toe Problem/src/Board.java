@@ -1,17 +1,18 @@
-import java.util.HashSet;
+import java.util.Collection;
+import java.util.HashMap;
 
 public class Board {
     private static final int SIZE = 3;
     private final CellState[][] board;
     private CellState currentPlayer;
     private CellState winner;
-    private HashSet<Integer> movesAvailable;
+    private HashMap<Integer, Move> movesAvailable;
     private int moveCount;
     private boolean gameIsOver;
 
     public Board() {
         board = new CellState[SIZE][SIZE];
-        movesAvailable = new HashSet<>();
+        movesAvailable = new HashMap<>();
         moveCount = 0;
         gameIsOver = false;
         currentPlayer = CellState.X;
@@ -19,18 +20,30 @@ public class Board {
         initializeBoard();
     }
 
-    public Board(Board boardToCopy){
+    private void initializeBoard() {
+        for (int row = 0; row < SIZE; row++) {
+            for (int col = 0; col < SIZE; col++) {
+                board[row][col] = CellState.BLANK;
+            }
+        }
+
+        movesAvailable.clear();
+        for (int cellIndex = 0; cellIndex < SIZE * SIZE; cellIndex++) {
+            movesAvailable.put(cellIndex, new Move(cellIndex / SIZE, cellIndex % SIZE));
+        }
+    }
+
+    public Board(Board boardToCopy) {
         this.board = new CellState[SIZE][SIZE];
         for (int i = 0; i < boardToCopy.board.length; i++) {
             this.board[i] = boardToCopy.board[i].clone();
         }
 
-       this.currentPlayer = boardToCopy.currentPlayer;
-       this.winner = boardToCopy.winner;
-       this.movesAvailable = new HashSet<>();
-       this.movesAvailable.addAll(boardToCopy.movesAvailable);
-       this.moveCount = boardToCopy.moveCount;
-       this.gameIsOver = boardToCopy.gameIsOver;
+        this.currentPlayer = boardToCopy.currentPlayer;
+        this.winner = boardToCopy.winner;
+        this.movesAvailable = new HashMap<>(boardToCopy.movesAvailable);
+        this.moveCount = boardToCopy.moveCount;
+        this.gameIsOver = boardToCopy.gameIsOver;
     }
 
     public boolean gameIsOver() {
@@ -48,22 +61,8 @@ public class Board {
         return winner;
     }
 
-    public HashSet<Integer> getAvailableMoves() {
-        return movesAvailable;
-    }
-
-    private void initializeBoard() {
-        for (int row = 0; row < SIZE; row++) {
-            for (int col = 0; col < SIZE; col++) {
-                board[row][col] = CellState.BLANK;
-            }
-        }
-
-        movesAvailable.clear();
-
-        for (int i = 0; i < SIZE * SIZE; i++) {
-            movesAvailable.add(i);
-        }
+    public Collection<Move> getAvailableMoves() {
+        return movesAvailable.values();
     }
 
     public boolean move(int row, int column) {
