@@ -54,46 +54,38 @@ public class Model {
         int correctCounter = 0;
 
         for (String entry : testData) {
-            //  System.out.println(entry);
-            double probabilityRepublican = Math.log(calculateProbabilityOfAttributeForRepublican(entry));
-            double probabilityDemocrat = Math.log(calculateProbabilityOfAttributeForDemocrat(entry));
-            // System.out.println("Probability of republican: " + probabilityRepublican);
-            //  System.out.println("Probability of democrat: " + probabilityDemocrat);
+            double probabilityRepublican = calculateProbabilityOfAttributeForRepublican(entry);
+            double probabilityDemocrat = calculateProbabilityOfAttributeForDemocrat(entry);
 
             if (probabilityRepublican > probabilityDemocrat && entry.startsWith("republican")) {
                 correctCounter++;
-                //     System.out.println("Correct");
             } else if (probabilityRepublican < probabilityDemocrat && entry.startsWith("democrat")) {
                 correctCounter++;
-                //    System.out.println("Correct");
-            } else {
-                //    System.out.println("Wrong");
             }
-
         }
 
         return (double) correctCounter / testData.size() * 100;
     }
 
     public double calculateProbabilityOfAttributeForRepublican(String entry) {
-        double probability = 1;
+        double probability = (double) republicanCounter / learningData.size();
         String[] attributes = entry.split(",");
 
         for (int i = 1; i < attributeYesCounterForRepublicans.length; i++) {
             String attributeValue = attributes[i];
-            probability *= getProbabilityOfAttributeForClass(i, attributeValue, "republican");
+            probability *= Math.log(getProbabilityOfAttributeForClass(i, attributeValue, "republican"));
         }
 
         return probability;
     }
 
     public double calculateProbabilityOfAttributeForDemocrat(String entry) {
-        double probability = 1;
+        double probability = (double) democratCounter / learningData.size();
         String[] attributes = entry.split(",");
 
         for (int i = 1; i < attributeYesCounterForRepublicans.length; i++) {
             String attributeValue = attributes[i];
-            probability *= getProbabilityOfAttributeForClass(i, attributeValue, "democrat");
+            probability *= Math.log(getProbabilityOfAttributeForClass(i, attributeValue, "democrat"));
         }
 
         return probability;

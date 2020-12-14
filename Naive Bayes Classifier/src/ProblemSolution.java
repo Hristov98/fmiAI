@@ -14,7 +14,6 @@ public class ProblemSolution {
 
     public ProblemSolution() {
         dataEntries = loadDataIntoList();
-
         attributeYesCounters = new int[ATTRIBUTE_NUMBER];
         attributeNoCounters = new int[ATTRIBUTE_NUMBER];
     }
@@ -69,32 +68,15 @@ public class ProblemSolution {
 
             String modifiedEntry = String.join(",", splitByAttribute);
             dataEntries.set(entryNumber, modifiedEntry);
-            //  System.out.println(modifiedEntry);
         }
     }
 
     public void executeTenfoldCrossValidation() {
-        Collections.shuffle(dataEntries);
+        List<ArrayList<String>> dataSets = breakUpDataIntoTenRandomSets();
 
-        List<ArrayList<String>> dataSets = new ArrayList<>();
-        int splitPoint = dataEntries.size() / 10;
-        //  System.out.println(splitPoint);
-
-        for (int setNumber = 0; setNumber < 10; setNumber++) {
-            dataSets.add(new ArrayList<>());
-            for (int i = 0; i < splitPoint; i++) {
-                dataSets.get(setNumber).add(dataEntries.get(setNumber * splitPoint + i));
-            }
-        }
-
-//        for (int setNumber = 0; setNumber < 10; setNumber++) {
-//            System.out.println(dataSets.get(setNumber).size());
-//            for (String entry : dataSets.get(setNumber)) {
-//                System.out.println(entry);
-//            }
-//        }
-
-        double averageAccuracy = 0;
+        double minAccuracy = Double.MAX_VALUE;
+        double maxAccuracy = Double.MIN_VALUE;
+        double sumOfAccuracies = 0;
         for (int setNumber = 0; setNumber < 10; setNumber++) {
             List<String> learningData = new ArrayList<>();
             for (int i = 0; i < 10; i++) {
@@ -109,15 +91,34 @@ public class ProblemSolution {
             trainingModel.calculateDataPerAttribute();
             double accuracy = trainingModel.evaluateTestData();
             System.out.printf("The accuracy of Model %d is: %.2f%%\n", setNumber + 1, accuracy);
-            averageAccuracy += accuracy;
+
+            sumOfAccuracies += accuracy;
+            if (accuracy < minAccuracy) {
+                minAccuracy = accuracy;
+            }
+            if (accuracy > maxAccuracy) {
+                maxAccuracy = accuracy;
+            }
         }
 
-        System.out.printf("The average accuracy of all models is: %.2f%%\n", averageAccuracy / 10);
+        System.out.printf("\nThe worst accuracy of all models is: %.2f%%\n", minAccuracy);
+        System.out.printf("The best accuracy of all models is: %.2f%%\n", maxAccuracy);
+        System.out.printf("The average accuracy of all models is: %.2f%%\n", sumOfAccuracies / 10);
     }
 
-    public void printDataEntries() {
-        for (String entry : dataEntries) {
-            System.out.println(entry);
+    private  List<ArrayList<String>> breakUpDataIntoTenRandomSets(){
+        Collections.shuffle(dataEntries);
+
+        List<ArrayList<String>> dataSets = new ArrayList<>();
+        int splitPoint = dataEntries.size() / 10;
+
+        for (int setNumber = 0; setNumber < 10; setNumber++) {
+            dataSets.add(new ArrayList<>());
+            for (int i = 0; i < splitPoint; i++) {
+                dataSets.get(setNumber).add(dataEntries.get(setNumber * splitPoint + i));
+            }
         }
+
+        return dataSets;
     }
 }
