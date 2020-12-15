@@ -27,13 +27,12 @@ public class Model {
     public void trainModel() {
         for (String entry : learningData) {
             String[] splitByAttribute = entry.split(",");
-            boolean isRepublican = true;
+            boolean isRepublican = splitByAttribute[0].equals("republican");
 
-            if (splitByAttribute[0].equals("democrat")) {
-                democratCounter++;
-                isRepublican = false;
-            } else if (splitByAttribute[0].equals("republican")) {
+            if (isRepublican) {
                 republicanCounter++;
+            } else {
+                democratCounter++;
             }
 
             for (int i = 1; i < splitByAttribute.length; i++) {
@@ -68,12 +67,12 @@ public class Model {
     }
 
     private double calculateProbabilityOfAttributeForRepublican(String entry) {
-        double logOfProbability = Math.log((double) republicanCounter / learningData.size());
+        double logOfProbability = Math.log(laplaceSmoothing(republicanCounter, learningData.size()));
         String[] attributes = entry.split(",");
 
-        for (int i = 0; i < attributeYesCounterForRepublicans.length; i++) {
+        for (int i = 1; i < attributes.length; i++) {
             String attributeValue = attributes[i];
-            logOfProbability += Math.log(getProbabilityOfAttributeRepublican(i, attributeValue));
+            logOfProbability += Math.log(getProbabilityOfAttributeRepublican(i - 1, attributeValue));
         }
 
         return logOfProbability;
@@ -81,19 +80,19 @@ public class Model {
 
     private double getProbabilityOfAttributeRepublican(int attributeIndex, String attributeValue) {
         if (attributeValue.equals("y")) {
-            return (double) (attributeYesCounterForRepublicans[attributeIndex] + 1) / (republicanCounter + 2);
+            return laplaceSmoothing(attributeYesCounterForRepublicans[attributeIndex], republicanCounter);
         } else {
-            return (double) (attributeNoCountersForRepublicans[attributeIndex] + 1) / (republicanCounter + 2);
+            return laplaceSmoothing(attributeNoCountersForRepublicans[attributeIndex], republicanCounter);
         }
     }
 
     private double calculateProbabilityOfAttributeForDemocrat(String entry) {
-        double logOfProbability = Math.log((double) democratCounter / learningData.size());
+        double logOfProbability = Math.log(laplaceSmoothing(democratCounter, learningData.size()));
         String[] attributes = entry.split(",");
 
-        for (int i = 0; i < attributeNoCountersForDemocrats.length; i++) {
+        for (int i = 1; i < attributes.length; i++) {
             String attributeValue = attributes[i];
-            logOfProbability += Math.log(getProbabilityOfAttributeDemocrat(i, attributeValue));
+            logOfProbability += Math.log(getProbabilityOfAttributeDemocrat(i - 1, attributeValue));
         }
 
         return logOfProbability;
@@ -101,45 +100,13 @@ public class Model {
 
     private double getProbabilityOfAttributeDemocrat(int attributeIndex, String attributeValue) {
         if (attributeValue.equals("y")) {
-            return (double) (attributeYesCounterForDemocrats[attributeIndex] + 1) / (democratCounter + 2);
+            return laplaceSmoothing(attributeYesCounterForDemocrats[attributeIndex], democratCounter);
         } else {
-            return (double) (attributeNoCountersForDemocrats[attributeIndex] + 1) / (democratCounter + 2);
+            return laplaceSmoothing(attributeNoCountersForDemocrats[attributeIndex], democratCounter);
         }
     }
 
-    public void printData() {
-        System.out.println(learningData.size());
-        for (String entry : learningData) {
-            System.out.println(entry);
-        }
-
-        System.out.println(testData.size());
-        for (String entry : testData) {
-            System.out.println(entry);
-        }
-    }
-
-    public void printCalculatedData() {
-        System.out.println(learningData.size());
-        System.out.println(republicanCounter + " " + democratCounter);
-
-        for (int attributeYesCounter : attributeYesCounterForRepublicans) {
-            System.out.print(attributeYesCounter + " ");
-        }
-        System.out.println();
-        for (int attributeYesCounter : attributeYesCounterForDemocrats) {
-            System.out.print(attributeYesCounter + " ");
-        }
-        System.out.println();
-
-        for (int attributeNoCounter : attributeNoCountersForRepublicans) {
-            System.out.print(attributeNoCounter + " ");
-        }
-        System.out.println();
-        for (int attributeNoCounter : attributeNoCountersForDemocrats) {
-            System.out.print(attributeNoCounter + " ");
-        }
-        System.out.println();
-        System.out.println();
+    private double laplaceSmoothing(int a, int b) {
+        return (double) (a + 1) / (b + 2);
     }
 }
