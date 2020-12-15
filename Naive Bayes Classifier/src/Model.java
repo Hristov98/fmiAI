@@ -24,7 +24,7 @@ public class Model {
         democratCounter = 0;
     }
 
-    public void calculateDataPerAttribute() {
+    public void trainModel() {
         for (String entry : learningData) {
             String[] splitByAttribute = entry.split(",");
             boolean isRepublican = true;
@@ -64,44 +64,46 @@ public class Model {
             }
         }
 
-        return (double) correctCounter / testData.size() * 100;
+        return ((double) correctCounter / testData.size()) * 100;
     }
 
-    public double calculateProbabilityOfAttributeForRepublican(String entry) {
-        double probability = (double) republicanCounter / learningData.size();
+    private double calculateProbabilityOfAttributeForRepublican(String entry) {
+        double logOfProbability = Math.log((double) republicanCounter / learningData.size());
         String[] attributes = entry.split(",");
 
-        for (int i = 1; i < attributeYesCounterForRepublicans.length; i++) {
+        for (int i = 0; i < attributeYesCounterForRepublicans.length; i++) {
             String attributeValue = attributes[i];
-            probability *= Math.log(getProbabilityOfAttributeForClass(i, attributeValue, "republican"));
+            logOfProbability += Math.log(getProbabilityOfAttributeRepublican(i, attributeValue));
         }
 
-        return probability;
+        return logOfProbability;
     }
 
-    public double calculateProbabilityOfAttributeForDemocrat(String entry) {
-        double probability = (double) democratCounter / learningData.size();
-        String[] attributes = entry.split(",");
-
-        for (int i = 1; i < attributeYesCounterForRepublicans.length; i++) {
-            String attributeValue = attributes[i];
-            probability *= Math.log(getProbabilityOfAttributeForClass(i, attributeValue, "democrat"));
-        }
-
-        return probability;
-    }
-
-    private double getProbabilityOfAttributeForClass(int attributeIndex, String attributeValue, String classValue) {
-        if (attributeValue.equals("y") && classValue.equals("republican")) {
-            return (double) (attributeYesCounterForRepublicans[attributeIndex] + 1) / (republicanCounter + 1);
-        }
-        if (attributeValue.equals("y") && classValue.equals("democrat")) {
-            return (double) (attributeYesCounterForDemocrats[attributeIndex] + 1) / (democratCounter + 1);
-        }
-        if (attributeValue.equals("n") && classValue.equals("republican")) {
-            return (double) (attributeNoCountersForRepublicans[attributeIndex] + 1) / (republicanCounter + 1);
+    private double getProbabilityOfAttributeRepublican(int attributeIndex, String attributeValue) {
+        if (attributeValue.equals("y")) {
+            return (double) (attributeYesCounterForRepublicans[attributeIndex] + 1) / (republicanCounter + 2);
         } else {
-            return (double) (attributeNoCountersForDemocrats[attributeIndex] + 1) / (democratCounter + 1);
+            return (double) (attributeNoCountersForRepublicans[attributeIndex] + 1) / (republicanCounter + 2);
+        }
+    }
+
+    private double calculateProbabilityOfAttributeForDemocrat(String entry) {
+        double logOfProbability = Math.log((double) democratCounter / learningData.size());
+        String[] attributes = entry.split(",");
+
+        for (int i = 0; i < attributeNoCountersForDemocrats.length; i++) {
+            String attributeValue = attributes[i];
+            logOfProbability += Math.log(getProbabilityOfAttributeDemocrat(i, attributeValue));
+        }
+
+        return logOfProbability;
+    }
+
+    private double getProbabilityOfAttributeDemocrat(int attributeIndex, String attributeValue) {
+        if (attributeValue.equals("y")) {
+            return (double) (attributeYesCounterForDemocrats[attributeIndex] + 1) / (democratCounter + 2);
+        } else {
+            return (double) (attributeNoCountersForDemocrats[attributeIndex] + 1) / (democratCounter + 2);
         }
     }
 

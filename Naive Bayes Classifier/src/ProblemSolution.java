@@ -88,7 +88,7 @@ public class ProblemSolution {
             }
 
             Model trainingModel = new Model(learningData, dataSets.get(setNumber));
-            trainingModel.calculateDataPerAttribute();
+            trainingModel.trainModel();
             double accuracy = trainingModel.evaluateTestData();
             System.out.printf("The accuracy of Model %d is: %.2f%%\n", setNumber + 1, accuracy);
 
@@ -106,7 +106,7 @@ public class ProblemSolution {
         System.out.printf("The average accuracy of all models is: %.2f%%\n", sumOfAccuracies / 10);
     }
 
-    private  List<ArrayList<String>> breakUpDataIntoTenRandomSets(){
+    private List<ArrayList<String>> breakUpDataIntoTenRandomSets() {
         Collections.shuffle(dataEntries);
 
         List<ArrayList<String>> dataSets = new ArrayList<>();
